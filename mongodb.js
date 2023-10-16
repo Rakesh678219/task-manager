@@ -27,8 +27,28 @@ MongoClient.connect(
     }
 
     const db = client.db(databaseName);
-
     db.collection("tasks")
+      .deleteOne({
+        description: "Clean the table",
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+    /* db.collection("users")
+      .deleteMany({
+        age: 27,
+      })
+      .then((res) => {
+        console.log(res);
+      })
+      .catch((err) => {
+        console.log(err);
+      });
+*/
+    /* db.collection("tasks")
       .updateMany(
         {
           completed: false,
@@ -45,6 +65,7 @@ MongoClient.connect(
       .catch((err) => {
         console.log(err);
       });
+      */
 
     /*
     db.collection("users")
