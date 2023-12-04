@@ -3,6 +3,7 @@
 require("./db/mongoose");
 const express = require("express");
 const User = require("./models/user");
+const Task = require("./models/task");
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -15,8 +16,22 @@ app.post("/users", (req, res) => {
     .then(() => {
       res.send(user);
     })
-    .catch(() => {
-      res.send("error");
+    .catch((err) => {
+      res.status(400);
+      res.send(err);
+    });
+});
+
+app.post("/tasks", (req, res) => {
+  const task = new Task(req.body);
+  task
+    .save()
+    .then(() => {
+      res.send(task);
+    })
+    .catch((err) => {
+      res.status(400);
+      res.send(err);
     });
 });
 app.listen(port, () => {

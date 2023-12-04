@@ -27,16 +27,16 @@ MongoClient.connect(
     }
 
     const db = client.db(databaseName);
-    db.collection("tasks")
-      .deleteOne({
-        description: "Clean the table",
-      })
-      .then((res) => {
-        console.log(res);
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+    // db.collection("tasks")
+    //   .deleteOne({
+    //     description: "Clean the table",
+    //   })
+    //   .then((res) => {
+    //     console.log(res);
+    //   })
+    //   .catch((err) => {
+    //     console.log(err);
+    //   });
     /* db.collection("users")
       .deleteMany({
         age: 27,
@@ -145,7 +145,6 @@ MongoClient.connect(
     );
     */
 
-    /*
     db.collection("tasks").insertMany(
       [
         {
@@ -167,6 +166,6 @@ MongoClient.connect(
         }
         console.log(result.insertedIds);
       }
-    );*/
+    );
   }
 );
