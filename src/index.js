@@ -32,11 +32,33 @@ app.get("/users/:id", async (req, res) => {
     const user = await User.findById(_id);
     if (!user) {
       return res.status(404).send("User not found");
-    } else {
-      return res.status(200).send(user);
     }
+    return res.status(200).send(user);
   } catch (err) {
-    return res.status(404).send(err);
+    return res.status(400).send(err);
+  }
+});
+
+app.patch("/users/:id", async (req, res) => {
+  const updates = Object.keys(req.body);
+  const allowedUpdates = ["name", "email", "age", "password"];
+  const isValidOperation = updates.every((update) =>
+    allowedUpdates.includes(update)
+  );
+  if (!isValidOperation) {
+    return res.status(400).send({ error: "Invalid update operation !" });
+  }
+  try {
+    const user = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!user) {
+      return res.status(404).send("User not found");
+    }
+    return res.send(user);
+  } catch (err) {
+    res.status(400).send(err);
   }
 });
 
@@ -54,9 +76,8 @@ app.get("/tasks/:id", async (req, res) => {
     const task = await Task.findById(_id);
     if (!task) {
       return res.status(404).send("Task not found");
-    } else {
-      return res.send(task);
     }
+    return res.send(task);
   } catch (err) {
     return res.status(500).send(err);
   }
