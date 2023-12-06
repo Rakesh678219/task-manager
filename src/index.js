@@ -62,6 +62,18 @@ app.patch("/users/:id", async (req, res) => {
   }
 });
 
+app.delete("/users/:id", async (req, res) => {
+  try {
+    const user = await User.findByIdAndDelete(req.params.id);
+    if (!user) {
+      res.status(404).send("No such user");
+    }
+    return res.send(user);
+  } catch (err) {
+    return res.status(500).send(err);
+  }
+});
+
 app.get("/tasks", async (req, res) => {
   try {
     const tasks = await Task.find({});
@@ -104,6 +116,17 @@ app.patch("/tasks/:id", async (req, res) => {
     return res.send(task);
   } catch (err) {
     res.status(400).send(err);
+  }
+});
+app.delete("/tasks/:id", async (req, res) => {
+  try {
+    const task = await Task.findByIdAndDelete(req.params.id);
+    if (!task) {
+      res.status(404).send("No such task");
+    }
+    return res.send(task);
+  } catch (err) {
+    return res.status(500).send(err);
   }
 });
 app.post("/tasks", async (req, res) => {
