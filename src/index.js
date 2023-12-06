@@ -82,6 +82,30 @@ app.get("/tasks/:id", async (req, res) => {
     return res.status(500).send(err);
   }
 });
+
+app.patch("/tasks/:id", async (req, res) => {
+  const updates = Object.keys(req.body);
+  const allowedUpdates = ["completed", "description"];
+  const isValidOperation = updates.every((update) =>
+    allowedUpdates.includes(update)
+  );
+  if (!isValidOperation) {
+    return res.status(400).send({ error: "Invalid update operation !" });
+  }
+  try {
+    const id = req.params.id;
+    const task = await Task.findByIdAndUpdate(id, req.body, {
+      new: true,
+      runValidators: true,
+    });
+    if (!task) {
+      res.status(404).send("Task not found");
+    }
+    return res.send(task);
+  } catch (err) {
+    res.status(400).send(err);
+  }
+});
 app.post("/tasks", async (req, res) => {
   try {
     const task = new Task(req.body);
