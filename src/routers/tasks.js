@@ -37,10 +37,16 @@ router.patch("/tasks/:id", async (req, res) => {
   }
   try {
     const id = req.params.id;
-    const task = await Task.findByIdAndUpdate(id, req.body, {
-      new: true,
-      runValidators: true,
+    const task = await Task.findById(id);
+    updates.forEach((update) => {
+      task[update] = req.body[update];
     });
+    task.save();
+    //issue with the middleware
+    // const task = await Task.findByIdAndUpdate(id, req.body, {
+    //   new: true,
+    //   runValidators: true,
+    // });
     if (!task) {
       res.status(404).send("Task not found");
     }
