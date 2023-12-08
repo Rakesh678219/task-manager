@@ -5,7 +5,7 @@ const User = require("../models/user");
 const router = new express.Router();
 const auth = require("../middleware/auth");
 
-router.post("/users/me", async (req, res) => {
+router.post("/users", async (req, res) => {
   try {
     const user = new User(req.body);
     await user.save();
