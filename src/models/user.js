@@ -52,6 +52,7 @@ const userSchema = new mongoose.Schema({
   ],
 });
 
+//this method is of specic user object
 userSchema.methods.generateAuthToken = async function () {
   const user = this;
   const token = await jwt.sign(
@@ -63,6 +64,7 @@ userSchema.methods.generateAuthToken = async function () {
   await user.save();
   return token;
 };
+//this method is for entire collection
 userSchema.statics.findByCredentials = async (email, password) => {
   const user = await User.findOne({ email: email });
   if (!user) {
