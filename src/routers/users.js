@@ -10,7 +10,7 @@ router.post("/users", async (req, res) => {
     const user = new User(req.body);
     await user.save();
     const token = await user.generateAuthToken();
-    res.status(201).send({ user: user, token: token });
+    res.status(201).send({ user,  token });
   } catch (err) {
     res.status(400).send(err);
   }
@@ -22,9 +22,29 @@ router.post("/users/login", async (req, res) => {
       req.body.password
     );
     const token = await user.generateAuthToken();
-    res.send({ user: user, token: token });
+    res.send({ user, token });
   } catch (err) {
     res.status(400).send(err.message);
+  }
+});
+router.post("/users/logout", auth, async (req, res) => {
+  try {
+    req.user.tokens = req.user.tokens.filter(
+      (token) => token.token !== req.token
+    );
+    await req.user.save();
+    res.send("Logout successfully");
+  } catch (err) {
+    res.status(404).send(err);
+  }
+});
+router.post("/users/logoutAll", auth, async (req, res) => {
+  try {
+    req.user.tokens = [];
+    await req.user.save();
+    res.send("Logged out of all devices successfully");
+  } catch (err) {
+    res.status(404).send(err);
   }
 });
 router.get("/users/me", auth, async (req, res) => {

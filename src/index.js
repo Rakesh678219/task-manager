@@ -12,3 +12,13 @@ app.use(taskRouter);
 app.listen(port, () => {
   console.log("listening on port " + port);
 });
+
+// const pet = {
+//   name: "pet",
+// };
+
+// pet.toJSON = function () {
+//   console.log(this);
+//   return {};
+// };
+// console.log(JSON.stringify(pet));
