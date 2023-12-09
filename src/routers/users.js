@@ -10,7 +10,7 @@ router.post("/users", async (req, res) => {
     const user = new User(req.body);
     await user.save();
     const token = await user.generateAuthToken();
-    res.status(201).send({ user,  token });
+    res.status(201).send({ user, token });
   } catch (err) {
     res.status(400).send(err);
   }
@@ -50,20 +50,8 @@ router.post("/users/logoutAll", auth, async (req, res) => {
 router.get("/users/me", auth, async (req, res) => {
   res.send(req.user);
 });
-router.get("/users/:id", async (req, res) => {
-  const _id = req.params.id;
-  try {
-    const user = await User.findById(_id);
-    if (!user) {
-      return res.status(404).send("User not found");
-    }
-    return res.status(200).send(user);
-  } catch (err) {
-    return res.status(400).send(err);
-  }
-});
 
-router.patch("/users/:id", async (req, res) => {
+router.patch("/users/me", auth, async (req, res) => {
   const updates = Object.keys(req.body);
   const allowedUpdates = ["name", "email", "age", "password"];
   const isValidOperation = updates.every((update) =>
@@ -73,8 +61,7 @@ router.patch("/users/:id", async (req, res) => {
     return res.status(400).send({ error: "Invalid update operation !" });
   }
   try {
-    const user = await User.findById(req.params.id);
-
+    const user = req.user;
     updates.forEach((update) => {
       user[update] = req.body[update];
     });
@@ -86,22 +73,16 @@ router.patch("/users/:id", async (req, res) => {
     //   new: true,
     //   runValidators: true,
     // });
-    if (!user) {
-      return res.status(404).send("User not found");
-    }
     return res.send(user);
   } catch (err) {
     res.status(400).send(err);
   }
 });
 
-router.delete("/users/:id", async (req, res) => {
+router.delete("/users/me", auth, async (req, res) => {
   try {
-    const user = await User.findByIdAndDelete(req.params.id);
-    if (!user) {
-      res.status(404).send("No such user");
-    }
-    return res.send(user);
+    await req.user.remove();
+    return res.send(req.user);
   } catch (err) {
     return res.status(500).send(err);
   }
