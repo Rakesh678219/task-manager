@@ -10,11 +10,22 @@ router.get("/tasks", auth, async (req, res) => {
   if (req.query.completed) {
     match["completed"] = req.query.completed === "true";
   }
+
+  const sort = {};
+
+  if (req.query.sortBy && req.query.sortOrder) {
+    sort[req.query.sortBy] = req.query.sortOrder === "descending" ? -1 : 1;
+  }
   try {
     await req.user
       .populate({
         path: "tasks",
         match: match,
+        options: {
+          limit: parseInt(req.query.size),
+          skip: parseInt(req.query.from),
+          sort: sort,
+        },
       })
       .execPopulate();
     res.status(200).send(req.user.tasks);
