@@ -5,6 +5,7 @@ const validator = require("validator");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const Task = require("./task");
+const JWT_SECRET = process.env.JWT_SECRET;
 const userSchema = new mongoose.Schema(
   {
     name: {
@@ -71,10 +72,7 @@ userSchema.virtual("tasks", {
 //this method is of specic user object
 userSchema.methods.generateAuthToken = async function () {
   const user = this;
-  const token = await jwt.sign(
-    { _id: user._id.toString() },
-    "thisismynewcourse"
-  );
+  const token = await jwt.sign({ _id: user._id.toString() }, JWT_SECRET);
 
   user.tokens = user.tokens.concat({ token });
   await user.save();
