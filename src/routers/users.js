@@ -8,6 +8,15 @@ const multer = require("multer");
 
 const upload = multer({
   dest: "avatars",
+  limits: {
+    fileSize: 1000000,
+  },
+  fileFilter: function (req, file, cb) {
+    if (!file.originalname.match(/\.(jpg|jpeg|png)$/)) {
+      return cb(new Error("Upload  failed"));
+    }
+    cb(undefined, true);
+  },
 });
 router.post("/users", async (req, res) => {
   try {
@@ -92,7 +101,14 @@ router.delete("/users/me", auth, async (req, res) => {
   }
 });
 
-router.post("/users/me/avatar", upload.single("avatar"), async (req, res) => {
-  res.send("Successfully uploaded image");
-});
+router.post(
+  "/users/me/avatar",
+  upload.single("avatar"),
+  async (req, res) => {
+    res.send("Successfully uploaded image");
+  },
+  (error, req, res, next) => {
+    res.status(400).send({ error: error.message });
+  }
+);
 module.exports = router;
