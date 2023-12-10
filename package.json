@@ -4,6 +4,7 @@
   "description": "",
   "main": "mongodb.js",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
     "express": "^4.18.2",
     "jsonwebtoken": "^9.0.2",
     "mailgun-js": "^0.22.0",
@@ -22,6 +23,6 @@
     "start": "node src/index.js",
     "dev": "env-cmd -f ./config/dev.env nodemon src/index.js"
   },
-  "author": "",
+  "author": "rakesh",
   "license": "ISC"
 }
