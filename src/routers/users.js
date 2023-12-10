@@ -20,6 +20,10 @@ const upload = multer({
 });
 router.post("/users", async (req, res) => {
   try {
+    const isAlreadyPresent = await User.findOne({ email: req.body.email });
+    if (isAlreadyPresent) {
+      res.status(400).send("Email Already Exists !");
+    }
     const user = new User(req.body);
     await user.save();
     sendWelcomeEmail(user.email, user.name);
