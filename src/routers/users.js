@@ -7,7 +7,6 @@ const auth = require("../middleware/auth");
 const multer = require("multer");
 
 const upload = multer({
-  dest: "avatars",
   limits: {
     fileSize: 1000000,
   },
@@ -103,12 +102,23 @@ router.delete("/users/me", auth, async (req, res) => {
 
 router.post(
   "/users/me/avatar",
+  auth,
   upload.single("avatar"),
   async (req, res) => {
+    req.user.avatar = req.file.buffer;
+    await req.user.save();
     res.send("Successfully uploaded image");
   },
   (error, req, res, next) => {
     res.status(400).send({ error: error.message });
   }
 );
+router.delete("/users/me/avatar", auth, async (req, res) => {
+  if (!req.user.avatar) {
+    res.status(400).send("No avatar available");
+  }
+  req.user.avatar = undefined;
+  await req.user.save();
+  res.send("Successfully deleted avatar");
+});
 module.exports = router;
