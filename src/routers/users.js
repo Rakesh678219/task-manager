@@ -23,9 +23,12 @@ router.post("/users", async (req, res) => {
     const user = new User(req.body);
     await user.save();
     sendWelcomeEmail(user.email, user.name);
+
     const token = await user.generateAuthToken();
+    console.log(token);
     res.status(201).send({ user, token });
   } catch (err) {
+    console.log("in create user error");
     res.status(400).send(err);
   }
 });
